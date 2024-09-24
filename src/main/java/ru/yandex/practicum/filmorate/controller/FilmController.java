@@ -52,6 +52,11 @@ public class FilmController {
         return updateFilmDate(film);
     }
 
+    @DeleteMapping
+    public void deleteAll() {
+        films.clear();
+    }
+
     private void validateFilm(Film film) throws ValidationException {
         if (film.getReleaseDate().isBefore(minReleaseDate)) {
             log.error("Film release date is before minimum date: {}", film.getReleaseDate());
