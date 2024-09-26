@@ -28,6 +28,7 @@ public class Film {
     private String name;
     @Size(max = 200, message = "Длина описания не может превышать 200 символов")
     private String description;
+
     private LocalDate releaseDate;
     @Min(value = 0, message = "Длительность фильма не может быть отрицательным числом")
     private Integer duration;

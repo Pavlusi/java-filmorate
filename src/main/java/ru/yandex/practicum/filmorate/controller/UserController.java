@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class UserController {
     @GetMapping
     public Collection<User> getUsers() {
         log.info("Get all users");
-        return users.values().stream().toList();
+        return new ArrayList<>(users.values());
     }
 
     @PostMapping
