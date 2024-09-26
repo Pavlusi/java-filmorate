@@ -4,15 +4,10 @@ package ru.yandex.practicum.filmorate.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.Utils;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -24,12 +19,10 @@ import java.util.Map;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith({MockitoExtension.class, SpringExtension.class})
 @WebMvcTest(FilmController.class)
 @AutoConfigureMockMvc
 public class FilmControllerTest {
 
-    @InjectMocks
     private FilmController filmController;
 
     @Autowired
@@ -42,25 +35,19 @@ public class FilmControllerTest {
 
     private Utils utils;
 
-
     @BeforeEach
     public void setUp() throws Exception {
-        MockitoAnnotations.openMocks(this);
         films = new HashMap<>();
         utils = new Utils();
-        tearDown();
-
+        reset();
     }
 
-
-    private void tearDown() throws Exception {
-        mockMvc.perform(delete("/films")
-                .contentType(MediaType.APPLICATION_JSON));
+    private void reset() throws Exception {
+        mockMvc.perform(delete("/films"));
     }
-
 
     @Test
-    public void testGetFilms() throws Exception {
+    public void getFilms() throws Exception {
         Film film = utils.getFilmWithId(1L);
         films.put(film.getId(), film);
 
@@ -74,20 +61,12 @@ public class FilmControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(films.values())));
-        System.out.println(films.toString());
+
     }
 
     @Test
-    public void testCreateFilm() throws Exception {
+    public void createFilm() throws Exception {
         shouldSaveNewFilm();
-    }
-
-    @Test
-    public void validateFilmModelTests() throws Exception {
-        shouldReturnErrorMessageWhenNameIsBlank();
-        shouldReturnErrorMessageWhenDescriptionLengthOver200();
-        shouldReturnErrorMessageWhenReleaseDateBefore28_12_1895();
-        shouldReturnErrorMessageWhenDurationIsNegative();
     }
 
     private void shouldSaveNewFilm() throws Exception {
@@ -98,6 +77,14 @@ public class FilmControllerTest {
                         .content(objectMapper.writeValueAsString(film)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(film)));
+    }
+
+    @Test
+    public void validateFilmModelTests() throws Exception {
+        shouldReturnErrorMessageWhenNameIsBlank();
+        shouldReturnErrorMessageWhenDescriptionLengthOver200();
+        shouldReturnErrorMessageWhenReleaseDateBefore28_12_1895();
+        shouldReturnErrorMessageWhenDurationIsNegative();
     }
 
     private void shouldReturnErrorMessageWhenNameIsBlank() throws Exception {
@@ -143,7 +130,6 @@ public class FilmControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Длительность фильма не может быть отрицательным числом"));
     }
-
 
     @Test
     public void updateFilm() throws Exception {

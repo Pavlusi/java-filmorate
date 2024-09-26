@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.util;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,29 +26,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @Getter
+    @Setter
     class ErrorResponse {
         private String message;
         private int status;
 
         public ErrorResponse(String message, int status) {
             this.message = message;
-            this.status = status;
-        }
-
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public void setStatus(int status) {
             this.status = status;
         }
     }

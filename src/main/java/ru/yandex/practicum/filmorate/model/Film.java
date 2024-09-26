@@ -13,7 +13,6 @@ import java.time.LocalDate;
  * Film.
  */
 @Data
-
 public class Film {
 
     public Film(String name, String description, LocalDate releaseDate, Integer duration) {

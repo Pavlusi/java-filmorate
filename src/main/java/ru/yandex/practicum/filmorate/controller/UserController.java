@@ -17,7 +17,6 @@ public class UserController {
 
     private final Map<Long, User> users = new HashMap<>();
 
-
     @GetMapping
     public Collection<User> getUsers() {
         log.info("Get all users");
@@ -48,12 +47,17 @@ public class UserController {
         return updateUserDate(user);
     }
 
+    @DeleteMapping
+    public void deleteAll() {
+        users.clear();
+    }
+
     private void validateUser(User user) throws ValidationException {
         if (user.getLogin().contains(" ")) {
             log.error("Login contains space : {}", user.getLogin());
             throw new ValidationException("Логин не может содержать пробелы");
         }
-        if (user.getName() == null) {
+        if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
     }
