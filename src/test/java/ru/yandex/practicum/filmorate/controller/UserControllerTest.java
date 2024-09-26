@@ -193,7 +193,7 @@ public class UserControllerTest {
         mockMvc.perform(put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedUser)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message")
                         .value("Пользователя  с id: " + updatedUser.getId() + " не существует"));
     }
