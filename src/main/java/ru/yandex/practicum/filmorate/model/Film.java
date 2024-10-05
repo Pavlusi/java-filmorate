@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.validation.constraints.*;
 
 
@@ -8,6 +9,8 @@ import lombok.Data;
 
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Film.
@@ -20,6 +23,7 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.description = description;
+        this.usersWhoLiked = new HashSet<>();
     }
 
     private Long id;
@@ -32,4 +36,6 @@ public class Film {
     private LocalDate releaseDate;
     @Min(value = 0, message = "Длительность фильма не может быть отрицательным числом")
     private Integer duration;
+    @JsonBackReference
+    private Set<User> usersWhoLiked;
 }

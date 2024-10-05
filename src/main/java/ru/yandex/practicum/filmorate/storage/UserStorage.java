@@ -8,6 +8,8 @@ public interface UserStorage {
 
     public Collection<User> getAllUsers();
 
+    public User getUserById(Long id);
+
     public User saveUser(User user);
 
     public User updateUser(User user);

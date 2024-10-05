@@ -28,6 +28,12 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) {
+        log.info("Get user with id {}", id);
+        return userService.getUserById(id);
+    }
+
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         validateUser(user);
@@ -49,6 +55,30 @@ public class UserController {
     @DeleteMapping
     public void deleteAll() {
         userService.deleteAllUsers();
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addingFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.addingFriend(id, friendId);
+        log.info("Added friend: {}", friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void unfriending(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.unfriending(id, friendId);
+        log.info("Unfrigend friend: {}", friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriends(@PathVariable Long id) {
+        log.info("Get friends of user: {}", id);
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getSharedFriends(@PathVariable Long id, @PathVariable Long otherId) {
+        log.info("Get shared friends of user: {}", id);
+        return userService.getSharedFriends(id, otherId);
     }
 
     private void validateUser(User user) throws ValidationException {

@@ -32,6 +32,11 @@ public class FilmController {
         return filmService.getAllFilms();
     }
 
+    @GetMapping("/{id}")
+    public Film getFilm(@PathVariable Long id) {
+        return filmService.getFilmById(id);
+    }
+
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         validateFilmReleaseDate(film);
@@ -50,6 +55,21 @@ public class FilmController {
         return filmService.updateFilm(film);
     }
 
+    @PutMapping("/{id}/like/{userId}")
+    public void likeFilm(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.likeFilm(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void unlikeFilm(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.unlikeFilm(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getPopularFilms(@RequestParam(required = false) Integer count) {
+           return filmService.getPopularFilms(count);
+    }
+
     @DeleteMapping
     public void deleteAll() {
         filmService.deleteAllFilms();
@@ -61,6 +81,5 @@ public class FilmController {
             throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
         }
     }
-
 
 }
