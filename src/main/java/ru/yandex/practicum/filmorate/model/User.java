@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -20,6 +21,7 @@ public class User {
         this.login = login;
         this.name = name;
         this.birthday = birthday;
+        this.friends = new HashSet<>();
     }
 
     private Long id;

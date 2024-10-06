@@ -43,7 +43,7 @@ public class FilmService {
         }
         return filmStorage.getAll()
                .stream()
-               .sorted((film1, film2) -> Integer.compare(film1.getUsersWhoLiked().size(), film2.getUsersWhoLiked().size()))
+               .sorted((film1, film2) -> Integer.compare(film2.getUsersWhoLiked().size(), film1.getUsersWhoLiked().size()))
                .limit(count)
                 .toList();
     }
