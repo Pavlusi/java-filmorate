@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class InMemoryFilmStorage  implements FilmStorage {
+public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> films = new HashMap<>();
 
@@ -23,7 +22,7 @@ public class InMemoryFilmStorage  implements FilmStorage {
 
     @Override
     public Film getFilmById(Long id) {
-        if(!films.containsKey(id)) {
+        if (!films.containsKey(id)) {
             throw new NotFoundException("Фильм с id: " + id + " не найден");
         }
         return films.get(id);
@@ -48,7 +47,7 @@ public class InMemoryFilmStorage  implements FilmStorage {
 
     @Override
     public void deleteAll() {
-      films.clear();
+        films.clear();
     }
 
     private long getNextId() {

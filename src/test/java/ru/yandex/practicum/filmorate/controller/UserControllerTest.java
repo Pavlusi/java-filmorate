@@ -10,11 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.Utils;
 import ru.yandex.practicum.filmorate.model.User;
-
-
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -198,4 +195,5 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Пользователя  с id: " + updatedUser.getId() + " не существует"));
     }
+
 }

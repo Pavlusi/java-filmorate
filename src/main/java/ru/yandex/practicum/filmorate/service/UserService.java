@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +19,7 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public Collection<User> getAllUsers(){
+    public Collection<User> getAllUsers() {
         return userStorage.getAllUsers();
     }
 
@@ -28,18 +27,18 @@ public class UserService {
         return userStorage.getUserById(id);
     }
 
-    public User saveUser(User user){
-       return userStorage.saveUser(user);
+    public User saveUser(User user) {
+        return userStorage.saveUser(user);
     }
 
-    public User updateUser(User user){
+    public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
 
     public void addingFriend(Long userId, Long friendId) throws NotFoundException {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
-        if(user.getFriends() == null){
+        if (user.getFriends() == null) {
             user.setFriends(new HashSet<>());
         }
         if (friend.getFriends() == null) {
@@ -52,10 +51,10 @@ public class UserService {
     public void unfriending(Long userId, Long friendId) throws NotFoundException {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
-        if(user.getFriends() == null){
+        if (user.getFriends() == null) {
             user.setFriends(new HashSet<>());
         }
-        if(friend.getFriends() == null){
+        if (friend.getFriends() == null) {
             friend.setFriends(new HashSet<>());
         }
         user.getFriends().remove(friend);
@@ -74,7 +73,7 @@ public class UserService {
         return friends;
     }
 
-    public void deleteAllUsers(){
+    public void deleteAllUsers() {
         userStorage.deleteAll();
     }
 }

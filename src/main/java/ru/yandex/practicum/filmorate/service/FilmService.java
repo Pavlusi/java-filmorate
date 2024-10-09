@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-
 import java.util.*;
 
 @Service
@@ -34,7 +33,7 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
-       return filmStorage.update(film);
+        return filmStorage.update(film);
     }
 
     public Collection<Film> getPopularFilms(Integer count) {
@@ -42,19 +41,19 @@ public class FilmService {
             count = 10;
         }
         return filmStorage.getAll()
-               .stream()
-               .sorted((film1, film2) -> Integer.compare(film2.getUsersWhoLiked().size(), film1.getUsersWhoLiked().size()))
-               .limit(count)
+                .stream()
+                .sorted((film1, film2) -> Integer.compare(film2.getUsersWhoLiked().size(), film1.getUsersWhoLiked().size()))
+                .limit(count)
                 .toList();
     }
 
     public void likeFilm(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
         User user = userStorage.getUserById(userId);
-        if(film.getUsersWhoLiked() == null){
+        if (film.getUsersWhoLiked() == null) {
             film.setUsersWhoLiked(new HashSet<>());
         }
-        if(user.getLikedFilms() == null){
+        if (user.getLikedFilms() == null) {
             user.setLikedFilms(new HashSet<>());
         }
         film.getUsersWhoLiked().add(user);

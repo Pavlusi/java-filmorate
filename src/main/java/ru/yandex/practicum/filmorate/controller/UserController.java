@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-
 import java.util.Collection;
 
 @Slf4j
@@ -59,14 +58,14 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addingFriend(@PathVariable Long id, @PathVariable Long friendId) {
-        userService.addingFriend(id, friendId);
         log.info("Added friend: {}", friendId);
+        userService.addingFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void unfriending(@PathVariable Long id, @PathVariable Long friendId) {
-        userService.unfriending(id, friendId);
         log.info("Unfrigend friend: {}", friendId);
+        userService.unfriending(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
