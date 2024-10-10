@@ -1,94 +1,63 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
+@RequiredArgsConstructor()
 public class FilmController {
 
-    private final Map<Long, Film> films = new HashMap<>();
-    private final LocalDate minReleaseDate = LocalDate.of(1895, Month.DECEMBER, 28);
+    private final FilmService filmService;
 
     @GetMapping
     public Collection<Film> getFilms() {
         log.info("Get all films");
-        return new ArrayList<>(films.values());
+        return filmService.getAllFilms();
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilm(@PathVariable Long id) {
+        return filmService.getFilmById(id);
     }
 
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
-        validateFilmReleaseDate(film);
-        film.setId(getNextId());
         log.info("New film created: {}", film);
-        films.put(film.getId(), film);
-        return film;
+        return filmService.saveFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        if (film.getId() == null) {
-            log.error("Film id is null");
-            throw new ValidationException("id не  может быть пустым");
-
-        } else if (!films.containsKey(film.getId())) {
-            log.error("Film id not found : {}", film.getId());
-            throw new NotFoundException("Фильма с id: " + film.getId() + " не существует");
-        }
-        validateFilmReleaseDate(film);
         log.info("Update film: {}", film);
-        return updateFilmDate(film);
+        return filmService.updateFilm(film);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void likeFilm(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.likeFilm(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void unlikeFilm(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.unlikeFilm(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getPopularFilms(@RequestParam(required = false, defaultValue = "10") Integer count) {
+        return filmService.getPopularFilms(count);
     }
 
     @DeleteMapping
     public void deleteAll() {
-        films.clear();
-    }
-
-    private void validateFilmReleaseDate(Film film) throws ValidationException {
-        if (film.getReleaseDate().isBefore(minReleaseDate)) {
-            log.error("Film release date is before minimum date: {}", film.getReleaseDate());
-            throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
-        }
-    }
-
-    private Film updateFilmDate(Film updatedFilm) {
-        Film oldFilm = films.get(updatedFilm.getId());
-        if (updatedFilm.getName() != null) {
-            oldFilm.setName(updatedFilm.getName());
-        }
-        if (updatedFilm.getDescription() != null) {
-            oldFilm.setDescription(updatedFilm.getDescription());
-        }
-        if (updatedFilm.getReleaseDate() != null) {
-            oldFilm.setReleaseDate(updatedFilm.getReleaseDate());
-        }
-        if (updatedFilm.getDuration() != null) {
-            oldFilm.setDuration(updatedFilm.getDuration());
-        }
-        return oldFilm;
-    }
-
-    private long getNextId() {
-        long currentMaxId = films.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+        filmService.deleteAllFilms();
     }
 
 }
