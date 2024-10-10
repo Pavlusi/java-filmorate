@@ -1,23 +1,23 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor()
 public class UserService {
 
     private final UserStorage userStorage;
-
-    @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
 
     public Collection<User> getAllUsers() {
         return userStorage.getAllUsers();
@@ -27,11 +27,17 @@ public class UserService {
         return userStorage.getUserById(id);
     }
 
-    public User saveUser(User user) {
+    public User saveUser(User user) throws ValidationException {
+        validateUser(user);
         return userStorage.saveUser(user);
     }
 
-    public User updateUser(User user) {
+    public User updateUser(User user) throws ValidationException {
+        if (user.getId() == null) {
+            log.error("User id is null");
+            throw new ValidationException("id не  может быть пустым");
+        }
+        validateUser(user);
         return userStorage.updateUser(user);
     }
 
@@ -76,4 +82,15 @@ public class UserService {
     public void deleteAllUsers() {
         userStorage.deleteAll();
     }
+
+    private void validateUser(User user) throws ValidationException {
+        if (user.getLogin().contains(" ")) {
+            log.error("Login contains space : {}", user.getLogin());
+            throw new ValidationException("Логин не может содержать пробелы");
+        }
+        if (user.getName() == null || user.getName().isEmpty()) {
+            user.setName(user.getLogin());
+        }
+    }
+
 }

@@ -1,24 +1,26 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor()
 public class FilmService {
 
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
-
-    @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
-    }
+    private final LocalDate minReleaseDate = LocalDate.of(1895, Month.DECEMBER, 28);
 
     public Collection<Film> getAllFilms() {
         return filmStorage.getAll();
@@ -28,18 +30,21 @@ public class FilmService {
         return filmStorage.getFilmById(id);
     }
 
-    public Film saveFilm(Film film) {
+    public Film saveFilm(Film film) throws ValidationException {
+        validateFilmReleaseDate(film);
         return filmStorage.save(film);
     }
 
-    public Film updateFilm(Film film) {
+    public Film updateFilm(Film film) throws ValidationException {
+        if (film.getId() == null) {
+            log.error("Film id is null");
+            throw new ValidationException("id не  может быть пустым");
+        }
+        validateFilmReleaseDate(film);
         return filmStorage.update(film);
     }
 
     public Collection<Film> getPopularFilms(Integer count) {
-        if (count == null) {
-            count = 10;
-        }
         return filmStorage.getAll()
                 .stream()
                 .sorted((film1, film2) -> Integer.compare(film2.getUsersWhoLiked().size(), film1.getUsersWhoLiked().size()))
@@ -69,6 +74,13 @@ public class FilmService {
 
     public void deleteAllFilms() {
         filmStorage.deleteAll();
+    }
+
+    private void validateFilmReleaseDate(Film film) throws ValidationException {
+        if (film.getReleaseDate().isBefore(minReleaseDate)) {
+            log.error("Film release date is before minimum date: {}", film.getReleaseDate());
+            throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
+        }
     }
 
 }

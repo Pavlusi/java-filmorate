@@ -15,4 +15,5 @@ public interface UserStorage {
     public User updateUser(User user);
 
     public void deleteAll();
+
 }
